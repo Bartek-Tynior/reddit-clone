@@ -1,7 +1,7 @@
 "use client"
 
 import { FC, useState } from 'react'
-import { Button } from './ui/button'
+import { Button } from './ui/Button'
 import { signIn } from 'next-auth/react'
 import { Icons } from './Icons'
 import { useToast } from '@/hooks/use-toast'
