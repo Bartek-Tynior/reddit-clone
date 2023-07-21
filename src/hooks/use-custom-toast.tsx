@@ -17,6 +17,6 @@ export const useCustomToast = () => {
         })
     }
 
-    return {loginToast}
+    return { loginToast }
 
 }

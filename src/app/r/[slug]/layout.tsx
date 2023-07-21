@@ -3,6 +3,8 @@ import { db } from "@/lib/db"
 import { notFound } from "next/navigation"
 import { format } from "date-fns"
 import SubscribeLeaveButton from "@/components/SubscribeLeaveButton"
+import Link from "next/link"
+import { buttonVariants } from "@/components/ui/Button"
 
 const Layout = async ({children, params: {slug}}: { children: React.ReactNode, params: { slug: string } }) => {
 
@@ -91,8 +93,13 @@ const Layout = async ({children, params: {slug}}: { children: React.ReactNode, p
 
 
                         {subreddit.creatorId !== session?.user.id ? (
-                            <SubscribeLeaveButton />
+                            <SubscribeLeaveButton subredditId={subreddit.id} isSubscribed={isSubscribed} />
                         ) : null}
+
+                        <Link href={`r/${slug}/submit`} className={buttonVariants({
+                            variant: "outline",
+                            className: "w-full mb-6"
+                        })}>Create Post</Link>
                     </dl>
                 </div>
             </div>
