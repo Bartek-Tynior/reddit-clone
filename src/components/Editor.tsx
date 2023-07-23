@@ -1,11 +1,12 @@
 "use client"
 
-import { FC, useCallback, useRef } from 'react'
+import { FC, useCallback, useEffect, useRef, useState } from 'react'
 import TextareaAutoSize from 'react-textarea-autosize'
 import { useForm } from 'react-hook-form'
 import { PostCreatoionType, PostValidator } from '@/lib/validators/posts'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type EditorJS from '@editorjs/editorjs'
+import { uploadFiles } from '@/lib/uploadthing'
 
 interface EditorProps {
   subredditId: string
@@ -23,6 +24,13 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
   })
 
   const ref = useRef<EditorJS>()
+  const [isMounted, setIsMounted] = useState<boolean>(false)
+
+  useEffect(() => {
+    if(typeof window !== 'undefined') {
+      setIsMounted(true)
+    }
+  }, [])
 
   const initializedEditor = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default
@@ -53,13 +61,45 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
             config: {
               endpoint: '/api/link',
             }
-          }
+          },
+          image: {
+            class: ImageTool,
+            config: {
+              uploader: {
+                async uploadByFile(file: File) {
+                  const [response ] = await uploadFiles([file], 'imageUploader')
+
+                  return {
+                    success: 1,
+                    file: {
+                      url: response.fileUrl
+                    }
+                  }
+                }
+            }
+          },
+        },
+        list: List,
+        code: Code,
+        inlineCode: InlineCode,
+        tabel: Table,
+        embed: Embed
         }
       })
-    }
-          
-
+    } 
   }, [])
+
+  useEffect(() => {
+    
+      const init = async () => {
+        await initializedEditor()
+
+        setTimeout(() => {
+        // set focus to the editor
+        })
+      }
+
+  }, [isMounted, initializedEditor])
 
   return (
     <div className="w-full bg-zinc-50 rounded-lg border border-zinc-200">

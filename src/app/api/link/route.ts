@@ -28,5 +28,6 @@ export async function GET(req: Request) {
                 url: imageUrl
             }
         }
-       }));
+       })
+    );
 }
