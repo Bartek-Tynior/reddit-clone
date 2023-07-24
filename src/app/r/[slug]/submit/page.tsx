@@ -28,8 +28,6 @@ const page = async ({ params }: PageProps) => {
         </div>
       </div>
 
-      {/* form */}
-
       <Editor subredditId={subreddit.id} />
 
       <div className="w-full flex justify-end">

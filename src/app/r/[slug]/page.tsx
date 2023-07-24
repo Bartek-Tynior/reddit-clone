@@ -1,4 +1,5 @@
 import CreatePostMini from '@/components/CreatePostMini'
+import PostFeed from '@/components/PostFeed'
 import { INFINITE_SCROLLING_PAGINATION } from '@/config'
 import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
@@ -44,7 +45,7 @@ const page = async ({params}: PageProps) => {
             <CreatePostMini session={session} />
 
             {/* TODO: Show posts in user feed */}
-            
+            <PostFeed initialPosts={subreddit.posts} subredditName={subreddit.name}/>
 
         </div>
     )
