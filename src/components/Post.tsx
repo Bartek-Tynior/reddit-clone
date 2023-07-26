@@ -1,7 +1,12 @@
 import { formatTimeToNow } from '@/lib/utils'
 import { Post, User, Vote } from '@prisma/client'
+import { MessageSquare } from 'lucide-react'
 import Link from 'next/link'
 import { FC, useRef } from 'react'
+import EditorContent from './EditorContent'
+import PostVoteClient from './post-vote/PostVoteClient'
+
+type PartialVote = Pick<Vote, 'type'>
 
 interface PostProps {
   subredditName: string
@@ -9,16 +14,21 @@ interface PostProps {
     votes: Vote[]
     author: User
   }
+  commentAmount: number
+  votesAmount: number
+  currentVote?: PartialVote
 }
 
-const Post: FC<PostProps> = ({subredditName, post}) => {
+const Post: FC<PostProps> = ({subredditName, post, commentAmount, votesAmount, currentVote}) => {
 
   const postRef = useRef<HTMLDivElement>(null)
 
   return (
     <div className='rounded-md bg-white shadow'>
       <div className='px-6 py-4 flex justify-between'>
+
         {/* TODO: PostVotes */}
+        <PostVoteClient postId={post.id} initialUserVote={currentVote?.type} initialVotes={votesAmount} />
 
 
         <div className='w-0 flex-1'>
@@ -47,6 +57,8 @@ const Post: FC<PostProps> = ({subredditName, post}) => {
               </a>
 
               <div className='relative text-sm max-h-40 w-full overflow-clip' ref={postRef}>
+                <EditorContent content={post.body} />
+
                 {postRef.current?.clientHeight === 160 ? (
                     <div className='absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent' />
                 ) : null}
@@ -55,9 +67,11 @@ const Post: FC<PostProps> = ({subredditName, post}) => {
       </div>
 
         <div className='bg-gray-50 z-20 text-sm p-4 sm:px-6'>
-            
+          <a href={`/r/${subredditName}/post/${post.id}`} className='w-fit flex items-center gap-2'>
+            <MessageSquare className='w-4 h-4' />
+            {commentAmount} Comments
+          </a>        
         </div>
-
 
     </div>
   )
