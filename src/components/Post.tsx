@@ -27,7 +27,6 @@ const Post: FC<PostProps> = ({subredditName, post, commentAmount, votesAmount, c
     <div className='rounded-md bg-white shadow'>
       <div className='px-6 py-4 flex justify-between'>
 
-        {/* TODO: PostVotes */}
         <PostVoteClient postId={post.id} initialUserVote={currentVote?.type} initialVotes={votesAmount} />
 
 
@@ -45,7 +44,7 @@ const Post: FC<PostProps> = ({subredditName, post, commentAmount, votesAmount, c
               </>
             ) : null}
 
-            <span>Posted by u/{post.author.name}</span>
+            <span>Posted by u/{post.author.username}</span>
 
             {formatTimeToNow(new Date(post.createdAt))}
           </div>
