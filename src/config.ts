@@ -1,1 +1,2 @@
 export const INFINITE_SCROLLING_PAGINATION = 2
+export const SEARCH_RESULTS_TAKE = 5
