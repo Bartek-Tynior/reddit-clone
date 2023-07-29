@@ -1,3 +1,4 @@
+import CommentSection from "@/components/CommentSection";
 import EditorContent from "@/components/EditorContent";
 import PostVoteServer from "@/components/post-vote/PostVoteServer";
 import { buttonVariants } from "@/components/ui/Button";
@@ -20,9 +21,11 @@ export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
 const page = async ({ params }: PageProps) => {
-  const cachedPost = (await redis.hgetall(`post:${params.postId}`)) as CachedPost;
+  const cachedPost = (await redis.hgetall(
+    `post:${params.postId}`
+  )) as CachedPost;
 
-  let post: (Post & { votes: Vote[]; author: User }) | null = null
+  let post: (Post & { votes: Vote[]; author: User }) | null = null;
 
   if (!cachedPost) {
     post = await db.post.findFirst({
@@ -32,11 +35,11 @@ const page = async ({ params }: PageProps) => {
       include: {
         votes: true,
         author: true,
-      }
-    })
+      },
+    });
   }
 
-  if (!post && !cachedPost) return notFound()
+  if (!post && !cachedPost) return notFound();
 
   return (
     <div>
@@ -67,8 +70,14 @@ const page = async ({ params }: PageProps) => {
             {post?.title ?? cachedPost.title}
           </h1>
 
-          <EditorContent content={post?.body ?? cachedPost.content} />   
+          <EditorContent content={post?.body ?? cachedPost.content} />
 
+          <Suspense fallback={
+            <Loader2 className="h-5 w-5 animate-spin text-zin-500" />
+          }>
+             {/* @ts-expect-error server component */}
+            <CommentSection postId={post?.id ?? cachedPost.id} />
+          </Suspense>
         </div>
       </div>
     </div>
