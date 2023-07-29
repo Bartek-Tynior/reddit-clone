@@ -4,22 +4,23 @@ import { useCustomToast } from "@/hooks/use-custom-toast";
 import { usePrevious } from "@mantine/hooks";
 import { VoteType } from "@prisma/client";
 import { FC, useEffect, useState } from "react";
-import { Button } from "../ui/Button";
+import { Button } from "./ui/Button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
-import { PostVoteRequest } from "@/lib/validators/votes";
+import { CommentVoteRequest, PostVoteRequest } from "@/lib/validators/votes";
 import axios, { AxiosError } from "axios";
 import { toast } from "@/hooks/use-toast";
+import { CommentValidatorType } from "@/lib/validators/comments";
 
-interface PostVoteClientProps {
-  postId: string;
+interface CommentVotesPageProps {
+  commentId: string;
   initialVotes: number;
   initialUserVote?: VoteType | null;
 }
 
-const PostVoteClient: FC<PostVoteClientProps> = ({
-  postId,
+const CommentVotes: FC<CommentVotesPageProps> = ({
+  commentId,
   initialVotes,
   initialUserVote,
 }) => {
@@ -28,15 +29,11 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
   const [currentVote, setCurrentVote] = useState(initialUserVote);
   const prevVote = usePrevious(currentVote);
 
-  useEffect(() => {
-    setCurrentVote(initialUserVote);
-  }, [initialUserVote]);
-
   const { mutate: vote } = useMutation({
     mutationFn: async (type: VoteType) => {
-      const payload: PostVoteRequest = {
-        voteType: type,
-        postId: postId,
+      const payload: CommentVoteRequest = {
+        commentId,
+        type,
       };
 
       await axios.patch("/api/subreddit/post/vote", payload);
@@ -106,4 +103,4 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
   );
 };
 
-export default PostVoteClient;
+export default CommentVotes;

@@ -11,7 +11,7 @@ import { ArrowBigDown, ArrowBigUp, Loader2 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-interface PageProps {
+interface SubredditPostPageProps {
   params: {
     postId: string;
   };
@@ -20,7 +20,7 @@ interface PageProps {
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
-const page = async ({ params }: PageProps) => {
+const SubredditPostPage = async ({ params }: SubredditPostPageProps) => {
   const cachedPost = (await redis.hgetall(
     `post:${params.postId}`
   )) as CachedPost;
@@ -72,10 +72,10 @@ const page = async ({ params }: PageProps) => {
 
           <EditorContent content={post?.body ?? cachedPost.content} />
 
-          <Suspense fallback={
-            <Loader2 className="h-5 w-5 animate-spin text-zin-500" />
-          }>
-             {/* @ts-expect-error server component */}
+          <Suspense
+            fallback={<Loader2 className="h-5 w-5 animate-spin text-zin-500" />}
+          >
+            {/* @ts-expect-error server component */}
             <CommentSection postId={post?.id ?? cachedPost.id} />
           </Suspense>
         </div>
@@ -102,4 +102,4 @@ function PostVoteShell() {
   );
 }
 
-export default page;
+export default SubredditPostPage;
