@@ -2,7 +2,7 @@
 
 import { useCustomToast } from "@/hooks/use-custom-toast";
 import { usePrevious } from "@mantine/hooks";
-import { VoteType } from "@prisma/client";
+import { CommentVote, VoteType } from "@prisma/client";
 import { FC, useEffect, useState } from "react";
 import { Button } from "./ui/Button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
@@ -11,12 +11,11 @@ import { useMutation } from "@tanstack/react-query";
 import { CommentVoteRequest, PostVoteRequest } from "@/lib/validators/votes";
 import axios, { AxiosError } from "axios";
 import { toast } from "@/hooks/use-toast";
-import { CommentValidatorType } from "@/lib/validators/comments";
 
 interface CommentVotesPageProps {
   commentId: string;
   initialVotes: number;
-  initialUserVote?: VoteType | null;
+  initialUserVote?: Pick<CommentVote, "type">;
 }
 
 const CommentVotes: FC<CommentVotesPageProps> = ({
@@ -30,13 +29,13 @@ const CommentVotes: FC<CommentVotesPageProps> = ({
   const prevVote = usePrevious(currentVote);
 
   const { mutate: vote } = useMutation({
-    mutationFn: async (type: VoteType) => {
+    mutationFn: async (voteType: VoteType) => {
       const payload: CommentVoteRequest = {
         commentId,
-        type,
+        voteType,
       };
 
-      await axios.patch("/api/subreddit/post/vote", payload);
+      await axios.patch("/api/subreddit/post/comment/vote", payload);
     },
     onError: (err, voteType) => {
       if (voteType === "UP") setVotes((prev) => prev - 1);
@@ -54,13 +53,13 @@ const CommentVotes: FC<CommentVotesPageProps> = ({
         variant: "destructive",
       });
     },
-    onMutate: (type: VoteType) => {
-      if (currentVote === type) {
+    onMutate: (type) => {
+      if (currentVote?.type === type) {
         setCurrentVote(undefined);
         if (type === "UP") setVotes((prev) => prev - 1);
         else if (type === "DOWN") setVotes((prev) => prev + 1);
       } else {
-        setCurrentVote(type);
+        setCurrentVote({ type });
         if (type === "UP") setVotes((prev) => prev + (currentVote ? 2 : 1));
         else if (type === "DOWN")
           setVotes((prev) => prev - (currentVote ? 2 : 1));
@@ -69,7 +68,7 @@ const CommentVotes: FC<CommentVotesPageProps> = ({
   });
 
   return (
-    <div className="flex sm:flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0">
+    <div className="flex gap-1">
       <Button
         onClick={() => vote("UP")}
         size="sm"
@@ -78,7 +77,7 @@ const CommentVotes: FC<CommentVotesPageProps> = ({
       >
         <ArrowBigUp
           className={cn("h-5 w-5 text-zinc-700", {
-            "text-emerald-500 fill-emerald-500": currentVote === "UP",
+            "text-emerald-500 fill-emerald-500": currentVote?.type === "UP",
           })}
         />
       </Button>
@@ -95,7 +94,7 @@ const CommentVotes: FC<CommentVotesPageProps> = ({
       >
         <ArrowBigDown
           className={cn("h-5 w-5 text-zinc-700", {
-            "text-red-500 fill-red-500": currentVote === "DOWN",
+            "text-red-500 fill-red-500": currentVote?.type === "DOWN",
           })}
         />
       </Button>

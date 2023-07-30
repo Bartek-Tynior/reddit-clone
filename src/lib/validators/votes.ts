@@ -11,4 +11,4 @@ export const CommentVoteValidator = z.object({
 });
 
 export type PostVoteRequest = z.infer<typeof PostVoteValidator>;
-export type CommentVoteRequest = z.infer<typeof PostVoteValidator>;
+export type CommentVoteRequest = z.infer<typeof CommentVoteValidator>;

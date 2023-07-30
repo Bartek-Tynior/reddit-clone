@@ -5,9 +5,14 @@ import UserAvatar from "./UserAvatar";
 import { Comment, CommentVote, User } from "@prisma/client";
 import { formatTimeToNow } from "@/lib/utils";
 import CommentVotes from "./CommentVotes";
+import { Button } from "./ui/Button";
+import { MessageSquare } from "lucide-react";
 
 interface PostCommentProps {
   comment: ExtendedComment;
+  votes: number;
+  currentVote: CommentVote | undefined;
+  postId: string;
 }
 
 type ExtendedComment = Comment & {
@@ -15,7 +20,12 @@ type ExtendedComment = Comment & {
   author: User;
 };
 
-const PostComment: FC<PostCommentProps> = ({ comment }) => {
+const PostComment: FC<PostCommentProps> = ({
+  comment,
+  votes,
+  currentVote,
+  postId,
+}) => {
   const commentRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -42,7 +52,16 @@ const PostComment: FC<PostCommentProps> = ({ comment }) => {
       <p className="text-sm text-zinc-900 mt-2">{comment.text}</p>
 
       <div className="flex gap-2 items-center">
-          <CommentVotes />
+        <CommentVotes
+          commentId={comment.id}
+          initialVotes={votes}
+          initialUserVote={currentVote}
+        />
+
+        <Button variant="ghost" size="xs">
+          <MessageSquare className="h-4 w-4 mr-1.5" />
+          Reply
+        </Button>
       </div>
     </div>
   );
