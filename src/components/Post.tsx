@@ -24,23 +24,26 @@ const Post: FC<PostProps> = ({subredditName, post, commentAmount, votesAmount, c
   const postRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div className='rounded-md bg-white shadow'>
-      <div className='px-6 py-4 flex justify-between'>
+    <div className="rounded-md bg-[#202020] border border-white/10 shadow">
+      <div className="px-6 py-4 flex justify-between">
+        <PostVoteClient
+          postId={post.id}
+          initialUserVote={currentVote?.type}
+          initialVotes={votesAmount}
+        />
 
-        <PostVoteClient postId={post.id} initialUserVote={currentVote?.type} initialVotes={votesAmount} />
-
-
-        <div className='w-0 flex-1'>
-          <div className='max-h-40 mt-1 text-xs text-gray-500'>
+        <div className="w-0 flex-1">
+          <div className="max-h-40 mt-1 text-xs text-white">
             {subredditName ? (
               <>
-                <a className='underline text-zinc-900 text-sm underline-offset-2' href={`/r/${subredditName}`}>
+                <a
+                  className="underline text-white text-sm underline-offset-2"
+                  href={`/r/${subredditName}`}
+                >
                   r/{subredditName}
                 </a>
 
-
-
-                <span className='px-1'>-</span>
+                <span className="px-1">-</span>
               </>
             ) : null}
 
@@ -49,31 +52,36 @@ const Post: FC<PostProps> = ({subredditName, post, commentAmount, votesAmount, c
             {formatTimeToNow(new Date(post.createdAt))}
           </div>
 
-              <a href={`/r/${subredditName}/post/${post.id}`}>
-                <h1 className='text-lg font-semibold py-2 leaidng-6 text-gray-900'>
-                  {post.title}
-                </h1>
-              </a>
+          <a href={`/r/${subredditName}/post/${post.id}`}>
+            <h1 className="text-lg font-semibold py-2 leaidng-6 text-white">
+              {post.title}
+            </h1>
+          </a>
 
-              <div className='relative text-sm max-h-40 w-full overflow-clip' ref={postRef}>
-                <EditorContent content={post.body} />
+          <div
+            className="relative text-sm max-h-40 w-full overflow-clip"
+            ref={postRef}
+          >
+            <EditorContent content={post.body} />
 
-                {postRef.current?.clientHeight === 160 ? (
-                    <div className='absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent' />
-                ) : null}
-              </div>
+            {postRef.current?.clientHeight === 160 ? (
+              <div className="absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-[#202020] to-transparent" />
+            ) : null}
+          </div>
         </div>
       </div>
 
-        <div className='bg-gray-50 z-20 text-sm p-4 sm:px-6'>
-          <a href={`/r/${subredditName}/post/${post.id}`} className='w-fit flex items-center gap-2'>
-            <MessageSquare className='w-4 h-4' />
-            {commentAmount} Comments
-          </a>        
-        </div>
-
+      <div className="bg-[#202020] z-20 text-sm p-4 sm:px-6 text-white">
+        <a
+          href={`/r/${subredditName}/post/${post.id}`}
+          className="w-fit flex items-center gap-2"
+        >
+          <MessageSquare className="w-4 h-4" />
+          {commentAmount} Comments
+        </a>
+      </div>
     </div>
-  )
+  );
 }
 
 export default Post

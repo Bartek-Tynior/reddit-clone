@@ -20,26 +20,27 @@ export default function RootLayout({
   authModal: React.ReactNode
 }) {
   return (
-    <html lang='en' className={cn(
-      'bg-white text-slate-900 antialiased light',
-      montserrat.className
-    )}>
-      <body className='min-h-screen pt-12 bg-slate-50 antialiased'>
+    <html
+      lang="en"
+      className={cn(
+        "bg-[#0f0f0f] text-white antialiased light",
+        montserrat.className
+      )}
+    >
+      <body className="min-h-screen pt-12 bg-[#0f0f0f] antialiased">
         <Providers>
-
           {/* @ts-expect-error server component */}
-          <Navbar/>
+          <Navbar />
 
           {authModal}
 
-          <div className='container max-w-7xl mx-auto pt-12 h-full'>
-          {children}
+          <div className="container max-w-7xl mx-auto pt-12 h-full">
+            {children}
           </div>
-          
+
           <Toaster />
-          
         </Providers>
-        </body>
+      </body>
     </html>
-  )
+  );
 }
